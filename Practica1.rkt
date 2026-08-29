@@ -6,14 +6,16 @@
 ;; Gustavo Adrian Murillo Espinosa - 317011375
 
 ;; Ejercicio 1
-;; password aceptable? : String -> Boolean
 ;; Se considera aceptable si tiene por lo menos 8 caracteres, tiene al menos un numero, tiene al menos una letra mayuscula
 
 ;; Auxiliar para mas facil
+
+;;String -> Boolean
 (define (contiene-digito? s)
 (contiene-digito-auxiliar? s 0))
 
 ;; los dos caminos posibles para digitos
+;; String Number -> Boolean
 (define (contiene-digito-auxiliar? s i)
 (cond
    [(= i (string-length s)) #f]
@@ -22,11 +24,13 @@
 
 
 ;; Checar si tiene mayuscula
+;; String -> Boolean
 (define (contiene-mayuscula? s)
    (contiene-mayuscula-auxiliar? s 0))
 
 
 ;; Igual que el pasado, usamos como switch
+;; String Number -> Boolean
 (define (contiene-mayuscula-auxiliar? s i)
 (cond 
      [(= i (string-length s)) #f]
@@ -35,6 +39,7 @@
 
 
 ;; Ya con los dos de arriba solo es checar que ambos sean verdaderos con un and
+;;String -> Boolean
 (define (password-aceptable? password)
    (and (>= (string-length password) 8)
         (contiene-digito? password)
@@ -52,9 +57,11 @@
 
 
 ;; Ejercicio 2
-;; en-rango? : Number Number Number -> Boolean
-;; triangulo-valido? : Number Number Number -> Boolean
 
+;; Usamos and y > para validar las reglas de que se puede formar un triangulo (que todos sus lados sean positivos
+;; y que la suma de cualesquiera dos lados debe ser mayor que el tercero)
+
+;; triangulo-valido? : Number Number Number -> Boolean
 (define (triangulo-valido? a b c)
 (and (> a 0) (> b 0) (> c 0)
 (> (+ a b) c)
@@ -71,11 +78,11 @@
 
 
 ;; Ejercicio 3
-;; letras-repetidas? : String -> Boolean
 
 ;; hay que checar si la letra que tenemos en la posicion 0 se encuentra despues en 
 ;; el string y si no pues seguimos con la siguiente letra y asi hasta terminar el string
 
+;; String Char Number -> Boolean
 (define (aparece-luego? s c i)
   (cond 
        [(= i (string-length s)) #f]
@@ -83,10 +90,12 @@
        [else (aparece-luego? s c (+ i 1))]))
 
 ;; el principal, pero falta hacerlo por cada letra
+;; String -> Boolean
 (define (letras-repetidas? s)
  (letras-repetidas-auxiliar? s 0))
 
 ;; aqui ya por cada letra
+;; String Number -> Boolean
 (define (letras-repetidas-auxiliar? s i)
  (cond 
       [(= i (string-length s)) #f]
@@ -103,10 +112,10 @@
 
 
 ;; Ejercicio 4
-;; anagrama-profundo? : String String -> Boolean
 ;; Comprueba recursivamente si los caracteres de una lista existen en la otra y los va removiendo.
 
 ;; Vuelve los string a listar para aislar y procesar cada letra de manera individual
+;; String String -> Boolean
 (define (anagrama-profundo? s1 s2)
   (anagrama-listas? (string->list s1) (string->list s2)))
 
@@ -114,6 +123,7 @@
 ;; caracter de la 1ra lista existe en la 2da. En el caso de que sea asi,
 ;; hace la llamada recursiva procesando el rest de la 1ra y mandando a eliminar
 ;; ese caracter en la otra lista
+;; (Listof Char) (Listof Char) -> Boolean
 (define (anagrama-listas? l1 l2)
   (cond
     [(not (= (length l1) (length l2))) #f]
@@ -124,6 +134,7 @@
 
 ;; Reconstruye la 2da lista con cons, saltandose unicamente la 1ra coincidencia del
 ;; 1er caracter buscado para asegurar que si hay letras duplicadas, se emparejen correctamente
+;; Char (Listof Char) -> (Listof Char)
 (define (remover-primero x lst)
   (cond
     [(empty? lst) empty]
@@ -140,12 +151,13 @@
 
 
 ;; Ejercicio 5
-;; escalera? : (List of Number) -> Boolean
 
 
-;; Si esta vacia o tiene un elemento da "#t" luego luego, en caso de que haya mas,
-;; verifica que el 2do elemento de la lista sea exactamente el 1ro mas uno, avanzando
+
+;; Si esta vacia o tiene un elemento, da "#t" luego luego, en caso de que haya mas,
+;; verifica que el 2do elemento de la lista sea exactamente el 1ro mas uno, avanza
 ;; de manera recursiva
+;; (List of Number) -> Boolean
 (define (escalera? lst)
   (cond
     [(empty? lst) #t]
@@ -163,10 +175,10 @@
 
 
 ;; Ejercicio 6
-;; String -> Char
 
 ;; No es mucho por explicar, pero por si acaso: Se obtiene directamente con
 ;; string-ref tras calcular la longitud de la cadena menos 1 (puesto que empiezan por 0)
+;; String -> Char
 (define (ultimo-caracter cadena)
   (string-ref cadena (- (string-length cadena) 1)))
    
@@ -181,10 +193,10 @@
 
 
 ;; Ejercicio 7
-;; intercalar : (listof Any) (listof Any) -> (listof Any)
 
 ;; Se anidan los cons para enlazar el first de la lista a seguido por el first de la lista b,
 ;; se sigue la recursion con el rest de ambas hasta que alguna termine
+;; (listof Any) (listof Any) -> (listof Any)
 (define (intercalar a b)
   (cond
     [(empty? a) b]
@@ -203,12 +215,12 @@
 
 
 ;; Ejercicio 8
-;; zigzag-sum : ( listof number ) - > number
 
 ;; Al hacer la llamada recursiva resta el calculo del resto de la lista
 ;; al 1er elemento, y al resolverse de atras hacia adelante, la resta sobre
 ;; otra resta invierte los signos (si era resta, ahora es suma y viceversa),
 ;; lo que da el efecto donde se alterna la suma y la resta
+;;(Listof Number) -> Number
 (define (zigzag-sum lst)
   (if (empty? lst)
       '0
