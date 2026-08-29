@@ -223,11 +223,11 @@
 ;;(Listof Number) -> Number
 (define (zigzag-sum lst)
   (if (empty? lst)
-      '0
-      '(- (first lst) (zigzag-sum (rest lst)))))
+      0
+      (- (first lst) (zigzag-sum (rest lst)))))
 
 ;;Para ver que si amarra
 ;;(zigzag-sum '())
 ;; 0 debera devolver al correr
-;;(zigzag-sum ’(1 2 3 4 5))
+;;(zigzag-sum '(1 2 3 4 5))
 ;; debera devolver 3, tras hacer  1 - 2 + 3 - 4 + 5
