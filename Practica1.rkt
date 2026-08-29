@@ -43,11 +43,11 @@
 
 
 ;; Para probar
- (password-aceptable? "Racket2027")
+;; (password-aceptable? "Racket2027")
 ;;debe dar #t
- (password-aceptable? "racket2027")
+;; (password-aceptable? "racket2027")
 ;;debe dar #f
- (password-aceptable? "Ra2")
+;; (password-aceptable? "Ra2")
 ;;debe dar #f
 
 
@@ -62,16 +62,17 @@
 (> (+ b c) a)))
 
 ;;Para probar
-(triangulo-valido? 3 4 5)
+;;(triangulo-valido? 3 4 5)
 ;;debe dar #t
- (triangulo-valido? 5 5 5)
+;;(triangulo-valido? 5 5 5)
 ;;debe dar #t
- (triangulo-valido? -1 4 5)
+;;(triangulo-valido? -1 4 5)
 ;;debe dar #f
 
 
 ;; Ejercicio 3
 ;; letras-repetidas? : String -> Boolean
+
 ;; hay que checar si la letra que tenemos en la posicion 0 se encuentra despues en 
 ;; el string y si no pues seguimos con la siguiente letra y asi hasta terminar el string
 
@@ -95,55 +96,95 @@
 
 
 ;; Para probar
- (letras-repetidas?  "hola")
+;;(letras-repetidas?  "hola")
 ;;debe dar #false
- (letras-repetidas? "casa")
+;;(letras-repetidas? "casa")
 ;;debe dar #true
 
 
 ;; Ejercicio 4
 ;; anagrama-profundo? : String String -> Boolean
+;; Comprueba recursivamente si los caracteres de una lista existen en la otra y los va removiendo.
 
-;;(define(anagrama-profundo? s1 s2))
+;; Vuelve los string a listar para aislar y procesar cada letra de manera individual
+(define (anagrama-profundo? s1 s2)
+  (anagrama-listas? (string->list s1) (string->list s2)))
+
+;; Tras checar que sean igual de largas ambas listas, revisa si el 1er
+;; caracter de la 1ra lista existe en la 2da. En el caso de que sea asi,
+;; hace la llamada recursiva procesando el rest de la 1ra y mandando a eliminar
+;; ese caracter en la otra lista
+(define (anagrama-listas? l1 l2)
+  (cond
+    [(not (= (length l1) (length l2))) #f]
+    [(empty? l1) (empty? l2)]
+    [(member (first l1) l2)
+     (anagrama-listas? (rest l1) (remover-primero (first l1) l2))]
+    [else #f]))
+
+;; Reconstruye la 2da lista con cons, saltandose unicamente la 1ra coincidencia del
+;; 1er caracter buscado para asegurar que si hay letras duplicadas, se emparejen correctamente
+(define (remover-primero x lst)
+  (cond
+    [(empty? lst) empty]
+    [(char=? x (first lst)) (rest lst)]
+    [else (cons (first lst) (remover-primero x (rest lst)))]))
 
 
 ;; Para probar
-;; (anagrama-profundo? "abcde" "edcba") debe dar #true
-;; (anagrama-profundo; "abcde" "xyzde") debe dar #false
+;;(anagrama-profundo? "abcde" "edcba")
+;; debe dar #true
+;;(anagrama-profundo? "abcde" "xyzde")
+;;debe dar #false
 
 
 
 ;; Ejercicio 5
 ;; escalera? : (List of Number) -> Boolean
 
+
+;; Si esta vacia o tiene un elemento da "#t" luego luego, en caso de que haya mas,
+;; verifica que el 2do elemento de la lista sea exactamente el 1ro mas uno, avanzando
+;; de manera recursiva
 (define (escalera? lst)
   (cond
     [(empty? lst) #t]
-    [(empty? rest lst) #t]
-    ;;[]
+    [(empty? (rest lst)) #t]
+    [(= (first (rest lst)) (+ 1 (first lst))) (escalera? (rest lst))]
     [else #f]))
 
-;; Para probar
-;; (escalera '())
+;; Para ver que amarre
+;;(escalera? '())
 ;; debe dar #t
-;; (escalera '(3 4 5 7))
+;;(escalera? '(3 4 5 7))
 ;; debe dar #f
-;; (escalera '(-2 -1 0 1))
+;;(escalera? '(-2 -1 0 1))
 ;; debe dar #t
 
 
 ;; Ejercicio 6
-(list [+ 1 2]
-      [* 2 3]
-      [- 10 3])
+;; String -> Char
 
-(cons 'hola '(mundo))
+;; No es mucho por explicar, pero por si acaso: Se obtiene directamente con
+;; string-ref tras calcular la longitud de la cadena menos 1 (puesto que empiezan por 0)
+(define (ultimo-caracter cadena)
+  (string-ref cadena (- (string-length cadena) 1)))
+   
+;;Para ver que amarra
+;;(ultimo-caracter "Racket")
+;;debe dar t
+;;(ultimo-caracter "hola")
+;; debe dar a
+;;(ultimo-caracter "7")
+;; debe dar 7
 
-(cons 5 [cons 4 {cons 3 '(4)}])
 
 
 ;; Ejercicio 7
 ;; intercalar : (listof Any) (listof Any) -> (listof Any)
+
+;; Se anidan los cons para enlazar el first de la lista a seguido por el first de la lista b,
+;; se sigue la recursion con el rest de ambas hasta que alguna termine
 (define (intercalar a b)
   (cond
     [(empty? a) b]
@@ -153,42 +194,28 @@
                       (intercalar (rest a) (rest b))))]))
 
 ;; Para probar
-(intercalar '(1 2 3) '(a b c))
-(intercalar '() '(c d))
-(intercalar '(1 2) '())
+;;(intercalar '(1 2 3) '(a b c))
+;; debe regresar (1 a 2 b 3 c)
+;;(intercalar '() '(c d))
+;; debe regresar (c d)
+;;(intercalar '(1 2) '())
+;; debe regresar (1 2)
 
 
+;; Ejercicio 8
+;; zigzag-sum : ( listof number ) - > number
 
-;; Esto lo hice en laboratorio de lenguajes
-(define numeros '(10 20 30 40))
+;; Al hacer la llamada recursiva resta el calculo del resto de la lista
+;; al 1er elemento, y al resolverse de atras hacia adelante, la resta sobre
+;; otra resta invierte los signos (si era resta, ahora es suma y viceversa),
+;; lo que da el efecto donde se alterna la suma y la resta
+(define (zigzag-sum lst)
+  (if (empty? lst)
+      '0
+      '(- (first lst) (zigzag-sum (rest lst)))))
 
-(car (cdr (cdr numeros)))
-
-
-
-(define (suma-uno lista)
-(if (empty? lista)
-'()
-(cons (+ 1 (first lista))
-(suma-uno (rest lista)))))
-
-(suma-uno '(1 2 3))
-
-
-
-;; Ejercicios ayudantia
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+;;Para ver que si amarra
+;;(zigzag-sum '())
+;; 0 debera devolver al correr
+;;(zigzag-sum ’(1 2 3 4 5))
+;; debera devolver 3, tras hacer  1 - 2 + 3 - 4 + 5
